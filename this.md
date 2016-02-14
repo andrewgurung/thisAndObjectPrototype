@@ -9,7 +9,7 @@
 ### Consider: Explicitly passing object reference (context) around
 ```js
 function greet(context) {
-  console.log("Hi " + context.name);
+  console.log( "Hi " + context.name );
 }
 
 var foo = {
@@ -28,7 +28,7 @@ greet( bar ); // Hi Bar
 ### Elegant way of passing object reference implicitly using `this`
 ```js
 function greet() {
-  console.log("Hi " + this.name);
+  console.log("Hi " + this.name );
 }
 
 var foo = {
@@ -65,7 +65,7 @@ console.log( greet.age ); // 30
 ```js
 function greet(name) {
   console.log( "Hi " + name );
-  console.log( "Age: " + this.age); // Try to access its own function property `age`
+  console.log( "Age: " + this.age ); // Try to access its own function property `age`
 }
 
 greet.age = 30; // Adding 'age' property to `greet` function
@@ -86,7 +86,7 @@ greet( "Foo" ); // Hi Foo
 ```js
 function greet(name) {
   console.log( "Hi " + name );
-  console.log( "Age: " + data.age); // Try to find `data` object in its lexical scope
+  console.log( "Age: " + data.age ); // Try to find `data` object in its lexical scope
 }
 
 var data = {
@@ -105,7 +105,7 @@ greet( "Foo" ); // Hi Foo
 ```js
 function greet(name) {
   console.log( "Hi " + name );
-  console.log( "Age: " + greet.age); // Try to access its own function property `age` through `greet` function identifier
+  console.log( "Age: " + greet.age ); // Try to access its own function property `age` through `greet` function identifier
 }
 
 greet.age = 30; // Adding 'age' property to `greet` function
@@ -129,7 +129,7 @@ Note:
 ```js
 function greet(name) {
   console.log( "Hi " + name );
-  console.log( "Age: " + this.age); // Try to access its own function property `age` through `greet` function identifier
+  console.log( "Age: " + this.age ); // Try to access its own function property `age` through `greet` function identifier
 }
 
 greet.age = 30; // Adding 'age' property to `greet` function
