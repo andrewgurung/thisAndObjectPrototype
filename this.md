@@ -145,6 +145,25 @@ greet.call( greet , "Foo" ); // Hi Foo
 - `this` binding is based purely on call-site rules
 
 ### Rule #1: Default Binding
+- When function is called as standalone function with plain, undecorated function reference
+- When no other rules apply, we fall back to default binding
+- In strict mode, global object is not eligible for default binding
+
+```js
+function foo() {
+  console.log( this.a );
+}
+
+function bar() {
+  "use strict"
+  console.log( this. a);
+}
+var a =  2;
+
+foo(); // 2
+bar(); // undefined
+
+```
 
 ### Rule #2: Implicit Binding
 
