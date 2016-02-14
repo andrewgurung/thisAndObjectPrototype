@@ -166,7 +166,7 @@ bar(); // undefined
 ```
 
 ### Rule #2: Implicit Binding
-- When function is called in context of an object
+- When function is invoked in context of an object
 - Context object owns or contains the function
 - `this` = context object
 
@@ -181,6 +181,53 @@ var obj = {
 };
 
 obj.foo(); // 2
+```
+
+**Losing Implicit Binding #1: Function used as a new reference**
+- Instead of invoking function with context object, we use it as a reference to create another variable, later called in a different call-site
+- Called as a plain undecorated call
+
+```js
+function foo() {
+  console.log( this.a );
+}
+
+var obj = {
+  a: 2,
+  foo: foo
+};
+
+var a = "Global Object";
+var bar = obj.foo; // Just a reference to obj.foo() function
+
+// Plain call would be treated as Default binding
+bar(); // Global Object
+```
+
+**Losing Implicit Binding #2: Function passed as a reference in call back**
+- Parameter passing is just an implicit reference assignment
+
+```js
+function foo() {
+  console.log( this.a );
+}
+
+var obj = {
+  a: 2,
+  foo: foo
+};
+
+var a = "Global Object";
+
+setTimeout( obj.foo, 1000); // Global Object
+```
+
+***setTimeout Internal Pseudo Implementation***
+```js
+function setTimeout(fn, delay) {
+  // wait (somehow) for `delay` milliseconds
+  fn(); // <-- call-site! fn is just a reference
+}
 ```
 
 ### Rule #: Explicit Binding
