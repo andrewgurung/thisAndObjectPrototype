@@ -139,3 +139,15 @@ var age = 100;
 greet.call( greet , "Foo" ); // Hi Foo
                              // Age: 30
 ```
+
+## Call-Site Rules
+- Call-site refers to the location where a function is called
+- `this` binding is based purely on call-site rules
+
+### Rule #1: Default Binding
+
+### Rule #2: Implicit Binding
+
+### Rule #: Explicit Binding
+
+### Rule #: new Binding
