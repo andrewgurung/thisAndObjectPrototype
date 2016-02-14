@@ -75,7 +75,67 @@ var age = 100;
 greet( "Foo" ); // Hi Foo
                 // Age: 100
 ```
+
 ### Problem:
 - `this` doesn't refer to `greet` function
 - `this` actually refers to global object since the call-site `greet( "Foo" )` was invoked from the lexical scope of global object
 - But we want `this` to point to `greet` function and print `this.age` as 30 not 100
+
+### Solution #1: Define a property in the reach of its lexical scope
+
+```js
+function greet(name) {
+  console.log( "Hi " + name );
+  console.log( "Age: " + data.age); // Try to find `data` object in its lexical scope
+}
+
+var data = {
+  age: 30 // Adding 'age' property to `data` object in same lexical scope as greet (Global Scope)
+
+}
+
+var age = 100;
+
+greet( "Foo" ); // Hi Foo
+                // Age: 30
+```
+
+### Solution #2: Use the function identifier
+
+```js
+function greet(name) {
+  console.log( "Hi " + name );
+  console.log( "Age: " + greet.age); // Try to access its own function property `age` through `greet` function identifier
+}
+
+greet.age = 30; // Adding 'age' property to `greet` function
+
+var age = 100;
+
+greet( "Foo" ); // Hi Foo
+                // Age: 30
+```
+
+Note:
+- It is easier to refer a named function instead of anonymous function
+- Best Practice: Always use named function expression
+- Deprecated: `arguments.callee` can be used to refer to the function itself
+
+### Best Solution #3: Force `this` to point to the function object itself
+
+- Use `call( objectReference, optional_Param )` method to invoke `greet` function
+- Pass `greet` function as the objectReference
+
+```js
+function greet(name) {
+  console.log( "Hi " + name );
+  console.log( "Age: " + this.age); // Try to access its own function property `age` through `greet` function identifier
+}
+
+greet.age = 30; // Adding 'age' property to `greet` function
+
+var age = 100;
+
+greet.call( greet , "Foo" ); // Hi Foo
+                             // Age: 30
+```
