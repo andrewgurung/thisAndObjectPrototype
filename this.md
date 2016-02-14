@@ -59,3 +59,23 @@ greet.age = 30; // Adding 'age' property to `greet` function
 greet( "Foo" ); // Hi Foo
 console.log( greet.age ); // 30
 ```
+
+## Accessing function property by the function itself
+
+```js
+function greet(name) {
+  console.log( "Hi " + name );
+  console.log( "Age: " + this.age); // Try to access its own function property `age`
+}
+
+greet.age = 30; // Adding 'age' property to `greet` function
+
+var age = 100;
+
+greet( "Foo" ); // Hi Foo
+                // Age: 100
+```
+### Problem:
+- `this` doesn't refer to `greet` function
+- `this` actually refers to global object since the call-site `greet( "Foo" )` was invoked from the lexical scope of global object
+- But we want `this` to point to `greet` function and print `this.age` as 30 not 100
