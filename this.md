@@ -148,6 +148,7 @@ greet.call( greet , "Foo" ); // Hi Foo
 - When function is called as standalone function with plain, undecorated function reference
 - When no other rules apply, we fall back to default binding
 - In strict mode, global object is not eligible for default binding
+- `this` = global object
 
 ```js
 function foo() {
@@ -162,10 +163,25 @@ var a =  2;
 
 foo(); // 2
 bar(); // undefined
-
 ```
 
 ### Rule #2: Implicit Binding
+- When function is called in context of an object
+- Context object owns or contains the function
+- `this` = context object
+
+```js
+function foo() {
+  console.log( this.a );
+}
+
+var obj = {
+  a: 2,
+  foo: foo
+};
+
+obj.foo(); // 2
+```
 
 ### Rule #: Explicit Binding
 
