@@ -303,3 +303,97 @@ function foo(a) {
 var bar = new foo( 2 );
 console.log( bar.a ); // 2
 ```
+
+### Precedence of binding rules
+
+1. Is the function called with `new` operator?  
+   `this` = newly constructed object
+
+  ```js
+  var bar = new foo();
+  ```
+
+2. Is the function called explicitly with `call` or `apply`?  
+  `this` = explicitly specified object
+
+  ```js
+  var bar = foo.call( obj );
+  ```
+
+3. Is the function called implicitly with a context object that owns the function?  
+  `this` = context object
+
+  ```js
+  var bar = obj.foo();
+  ```
+4. Is the function in a plain and undecorated manner?
+  `this` = global object
+  `this` = undefined (Strict Mode)
+
+  ```js
+  var bar = foo();
+  ```
+
+## Best Practice: Use of DMZ `ø` Object
+
+- Common use of `apply`: Spread out arrays of values as parameters
+- Common use of `bind`: Curry functions
+- Both `apply` and `bind` methods require to pass an object as the first parameter for `this` binding
+- But in the following example, we don't care about `this`. So developers either pass `null` or `undefined` for `this` binding
+
+```js
+function foo(a, b) {
+  console.log( "a: " + a + ", b: " + b );
+}
+
+// Spread out array as parameters
+foo.apply( null, [2, 3] ); // a:2, b:3
+
+// Currying parameters (Partial application)
+var curriedFoo = foo.bind( null, 2 );
+curriedFoo(3); // a:2, b:3
+```
+
+### Hidden danger of using `null`
+- Third party library function might reference to `this` internally
+- When you pass `null`, it might inadvertently refer to or even mutate the global object (default binding)
+
+Consider: Use of safer `this` with DMZ `ø` object
+- Mac OS: Type Option + 'o' to output ø
+- Can choose any arbitary variable name to define the null object safely
+
+```js
+function foo(a, b) {
+  console.log( "a: " + a + ", b: " + b );
+}
+
+// DMZ empty object
+var ø = Object.create( null ); // More emptier than plain null object
+// Spread out array as parameters
+foo.apply( ø, [2, 3] ); // a:2, b:3
+
+// Currying parameters (Partial application)
+var curriedFoo = foo.bind( ø, 2 );
+curriedFoo(3); // a:2, b:3
+```
+
+### ES6 arrow-functions
+- Arrow-functions use lexical scope for `this` binding
+- Represented as fat arrow operator  =>
+- Inherits `this` binding from its enclosing function call
+- Syntactic replacement of self = this
+- Lexical binding of arrow-functions cannot be overriden even with `new` operator
+
+```js
+function foo() {
+  return (a) => {
+    console.log( this.a );
+  }
+}
+
+var obj1 = { a: 2 };
+var obj2 = { a: 3 };
+
+var bar = foo.call( obj1 ); // Lexically bound `this` with `obj1`
+bar.call( obj2 ); // 2 instead of 3. Cannot be overridden
+```
