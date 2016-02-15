@@ -166,8 +166,8 @@ bar(); // undefined
 ```
 
 ### Rule #2: Implicit Binding
-- When function is invoked in context of an object
 - Context object owns or contains the function
+- Mutate the object to include a reference on itself to the function
 - `this` = context object
 
 ```js
@@ -230,6 +230,76 @@ function setTimeout(fn, delay) {
 }
 ```
 
-### Rule #: Explicit Binding
+### Rule #3: Explicit Binding
+- Use `call(..)`, `apply(..)`, `bind(..)` methods which is available in all Javascript functions
+- `this` = Object that we pass
 
-### Rule #: new Binding
+**Example: `call(..)`**
+```js
+function greet(a, b) {
+  var product = a * b;
+  console.log( "Hello " + this.name );
+  console.log( "Product: " + product );
+}
+
+var objFoo = {
+  name: "Foo"
+};
+
+greet.call( objFoo, 2, 3 ); // Hello Foo
+                            // Product: 6
+```
+
+**Example: `apply(..)`**
+```js
+function greet(a, b) {
+  var product = a * b;
+  console.log( "Hello " + this.name );
+  console.log( "Product: " + product );
+}
+
+var objFoo = {
+  name: "Foo"
+};
+
+var params = [2, 3];
+greet.apply( objFoo, params ); // Hello Foo
+                               // Product: 6
+```
+
+**Example: `bind(..)`**
+-  `bind(..)` returns a new function that binds the function to the object that we pass
+
+```js
+function greet(a, b) {
+  var product = a * b;
+  return "Hello " + this.name + " Product: " + product;
+}
+
+var objFoo = {
+  name: "Foo"
+};
+
+var boundFunction = greet.bind( objFoo, 2, 3 );
+var result = boundFunction();
+console.log( result ); // Hello Foo Product: 6
+```
+
+
+### Rule #4: new Binding
+- Invoke a function with `new` operator
+- A brand new object is created
+- This newly constructed object is set as the `this` binding
+- Unless the function returns its own alternate object, the newly constructed object will be returned
+- `this` = newly constructed object
+
+Consider:
+
+```js
+function foo(a) {
+  this.a = a;
+}
+
+var bar = new foo( 2 );
+console.log( bar.a ); // 2
+```
