@@ -129,3 +129,77 @@ var duplicateObject = Object.assign( {}, myObject );
 console.log( myObject.a ); // 2
 console.log( myObject.b === duplicateObject.b ); // true due to shallow copy refers to same location
 ```
+
+### Property Descriptors
+- ES5 allowed properties to have characteristics
+
+```js
+var myObject = {
+ a: 20,
+};
+
+Object.getOwnPropertyDescriptor( myObject, "a" );
+/*
+ {
+  value: 20,
+  writable: true,
+  enumerable: true,
+  configurable: true
+}
+*/
+```
+
+- Add Property: Generally rarely used
+  - Writable: If set to false, trying to overwrite property value will fail silently. Or throw a `TypeError` in strict mode
+  - Enumerable: If set to false, the property won't show up in a `for .. in` loop
+  - Configurable: Be careful, one way traffic. Cannot delete property afterward. But still allows to modify properties
+
+Consider:
+```js
+Object.defineProperty( myObject, "name", {
+  value: "Foo",
+  writable: true,
+  enumerable: true,
+  configurable: true
+} );
+console.log( myObject.name ); // Foo
+```
+
+### Immutability: Ways of achieving immutability
+1. Object constant: writable: false, configurable: false
+  - Turns a property to a constant
+
+  ```js
+  var myObject = {};
+
+  Object.defineProperty( myObject, "CONSTANT_LUCKY_NUM", {
+    value: 7,
+    writable: false,
+    configurable: false
+  });
+  ```
+
+2. Prevent extensions: Object.preventExtensions(..)
+  - Prevents from adding new properties
+
+  ```js
+  var myObject = {
+    a: 2
+  };
+  Object.preventExtensions( myObject );
+  myObject.b = 3;
+  console.log( myObject.b ); // undefined
+                             // TypeError (in Strict Mode)
+  ```
+
+3. Seal: Object.seal(..)
+  - calls Object.preventExtensions(..) and also
+  - sets configurable: false
+  - Prevents from adding new properties
+  - Prevents reconfiguring and deleting properties
+  - But still allows to modify properties
+
+4. Freeze: Object.freeze(..)
+  - Highest level of immutability
+  - calls Object.seal(..) and also
+  - sets writable: false
