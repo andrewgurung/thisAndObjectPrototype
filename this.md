@@ -1,4 +1,4 @@
-## this
+## `this`
 - `this` is a binding made when a function is invoked
 - What `this` refers to is entirely based by the call-site where the function is called
 
