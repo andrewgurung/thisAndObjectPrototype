@@ -203,3 +203,26 @@ console.log( myObject.name ); // Foo
   - Highest level of immutability
   - calls Object.seal(..) and also
   - sets writable: false
+
+### [[Get]]
+- During a property access, the code internally performs a [[Get]] operation which inspects the object first for a property, then traverses to the [[Prototype]] chain.
+- If nothing is found, returns the value `undefined`
+- Hard to determine if a value of a property is `undefined` explicitly or it simply returned `undefined` (not found).
+  Eg. Even though `myObject.b` and `myObject.z` returns `undefined`, they are NOT same
+
+```js
+var myObject = {
+  a: 2,
+  b: undefined
+};
+
+console.log( myObject.a ); // 2
+console.log( myObject.b ); // undefined
+console.log( myObject.z ); // undefined
+console.log( x );          // ReferenceError
+```
+
+### [[Put]]
+- Behaves differently based on different factors such as access or data descriptor, writable or not, strict or non-strict mode etc.
+
+### Getters and Setters
