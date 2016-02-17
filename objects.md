@@ -225,4 +225,48 @@ console.log( x );          // ReferenceError
 ### [[Put]]
 - Behaves differently based on different factors such as access or data descriptor, writable or not, strict or non-strict mode etc.
 
-### Getters and Setters
+### Getters and Setters: Override default [[Get]] and [[Put]]
+- Getters: Hidden function to retrieve a value
+- Setters: Hidden function to set a value
+- Getters and Setters are defined per-property level
+- Property description that contains getters or setters or both: "Accessor Descriptor"
+- For accessor descriptors, the `value` and `writable` characteristics of descriptors are ignored
+- Best Practice: Always declare both getter and setter
+
+```js
+// 1. Object literal syntax get and set
+var myObject = {
+  // define getter for 'amount'
+  // Just a convention of representing _amount_ internally
+  get amount() {
+    return this._amount_;
+  },
+
+  // define setter for 'amount'
+  set amount(amount) {
+    this._amount_ = "$" + amount;
+  }
+}
+
+// 2. Explicit definition using defineProperty(..)
+// Only getter is defined
+Object.defineProperty(
+  myObject,
+  "year",
+  {
+    get: function() {
+      return 2016;
+    }
+  }
+);
+
+myObject.amount = 200;
+console.log( myObject.amount ); // $200
+myObject.amount = 500;
+console.log( myObject.amount ); // $500
+
+
+console.log( myObject.year ); // 2016
+myObject.year = 1900;
+console.log( myObject.year ); // 2016  [No setter defined. Cannot overwrite.]
+```
