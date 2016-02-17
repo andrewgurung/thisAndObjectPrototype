@@ -251,9 +251,9 @@ var myObject = {
 // 2. Explicit definition using defineProperty(..)
 // Only getter is defined
 Object.defineProperty(
-  myObject,
-  "year",
-  {
+  myObject, // target object
+  "year", // new property
+  { // Property Descriptor
     get: function() {
       return 2016;
     }
@@ -270,3 +270,74 @@ console.log( myObject.year ); // 2016
 myObject.year = 1900;
 console.log( myObject.year ); // 2016  [No setter defined. Cannot overwrite.]
 ```
+
+### Existence of a Property in an Object
+- `in` operator will check if the property is in the object, or higher level of the [[Prototype]] chain
+- hasOwnProperty(..) will only check if property is in the direct object
+- hasOwnProperty(..) is accessible to all normal objects via delegation to Object.Prototype
+- But if object was created using Object.create(null), it won't have access to hasOwnProperty(..)
+  In such case, we need to use *explicit binding*. Eg: Object.prototype.hasOwnProperty.call( myObject, "prop" )
+
+```js
+var myObject = {
+  a: 2
+};
+
+("a" in myObject); // true
+("b" in myObject); // false
+
+myObject.hasOwnProperty( "a" ); // true
+myObject.hasOwnProperty( "b" ); // false
+```
+
+### Enumeration
+- `for..in` loops in arrays can give unexpected results if it contains enumerable properties which are non-numeric
+- Best Practice:
+  - Use `for..in` loops only on objects
+  - Use traditional `for(i=0; i<10; i++)` loop for arrays
+- Use `propertyIsEnumerable(..)` to test if a property exists directly on the object and set to `enumerable:true`
+- Use `Object.keys(..)` to get all enumerable properties of direct object
+- Use `Object.getOwnPropertyNames(..)` to get all properties whether enumerable or not
+
+```js
+var obj = {};
+
+// 1. Add 'a' as a enumerable property of obj
+Object.defineProperty( obj, "a", {
+  enumerable: true,
+  value: 2
+});
+
+// 2. Add 'b' as a NON-enumerable property of obj
+Object.defineProperty( obj, "b", {
+  enumerable: false,
+  value: 3
+});
+
+console.log( obj.a ); // 2
+console.log( obj.b ); // 3
+
+// 3. `in` operator property check, traverses Prototype chain
+( "b" in obj ); // true
+
+// 4. hasOwnProperty(..) property check in direct object
+obj.hasOwnProperty( "b" ); // true
+
+// 5. for..in loop. Doesn't include NON-enumerable property "b"
+for (var key in obj) {
+  console.log( "Key: " + key + ", Value: " + obj[key] );
+}
+// Output: Key: a, Value: 2
+
+// 6. propertyIsEnumerable(..)
+obj.propertyIsEnumerable( "a" ); // true
+obj.propertyIsEnumerable( "b" ); // false
+
+// 7. Object.keys(..)
+Object.keys( obj ); // ["a"]
+
+// 8. Object.getOwnPropertyNames(..)
+Object.getOwnPropertyNames( obj ); // ["a", "b"]
+```
+
+### Iteration
