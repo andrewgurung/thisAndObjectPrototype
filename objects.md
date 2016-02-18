@@ -271,6 +271,7 @@ myObject.year = 1900;
 console.log( myObject.year ); // 2016  [No setter defined. Cannot overwrite.]
 ```
 
+
 ### Existence of a Property in an Object
 - `in` operator will check if the property is in the object, or higher level of the [[Prototype]] chain
 - hasOwnProperty(..) will only check if property is in the direct object
@@ -289,6 +290,7 @@ var myObject = {
 myObject.hasOwnProperty( "a" ); // true
 myObject.hasOwnProperty( "b" ); // false
 ```
+
 
 ### Enumeration
 - `for..in` loops in arrays can give unexpected results if it contains enumerable properties which are non-numeric
@@ -341,3 +343,114 @@ Object.getOwnPropertyNames( obj ); // ["a", "b"]
 ```
 
 ### Iteration
+
+#### Standard `for` loop: Iterating over indices of an array
+```js
+var myArray = [1, 2, 3];
+
+for (var i = 0; i < myArray.length; i++) {
+  console.log( myArray[i] );
+}
+// 1 2 3
+```
+
+
+#### forEach(..): Iteration helper for arrays
+
+- Iterate over all values by ignoring any callback return values
+
+```js
+var myArray = [5, 10, 15];
+
+// index and array are optional parameters
+function logArrayElements(element, index, array) {
+  console.log( "Index " + index + ": " + element );
+}
+
+myArray.forEach( logArrayElements );
+// "Index 0: 5"
+// "Index 1: 10"
+// "Index 2: 15"
+```
+
+#### every(..): Iteration helper for arrays
+
+- Iterate over the values until the end or the callback returns a `false` value
+
+```js
+var fives = [5, 10, 15];
+var primes = [2, 3, 5];
+
+// index and array are optional parameters
+function isMultipleOfFive(element, index, array) {
+  return element%5 === 0;
+}
+
+console.log(fives.every( isMultipleOfFive )); // true
+console.log(primes.every( isMultipleOfFive )); // false
+```
+
+#### Arrow functions: Shorter syntax
+```js
+var fives = [5, 10, 15];
+
+console.log(fives.every( element => element%5 === 0 )); // true
+```
+
+#### some(..): Iteration helper for arrays
+
+- Iterate over the values until the end or the callback returns a `true` value
+
+```js
+var fives = [5, 10, 15];
+var odds = [1, 3, 5];
+
+// index and array are optional parameters
+function isEven(element, index, array) {
+  return element%2 === 0;
+}
+
+console.log(fives.some( isEven )); // true
+console.log(odds.some( isEven )); // false
+```
+
+### ES6 adds `for..of` loop
+- Loops through value instead of indices
+- Uses `@@iterator` [Symbol.iterator] to call `next()` method once for each loop iteration
+- Arrays have default support of `for..of` loops
+- Objects can also use `for..of` loop by defining [Symbol.iterator] property
+
+```js
+var fives = [5, 10, 15];
+var it = fives[Symbol.iterator]();
+
+it.next(); // { value:5, done:false }
+it.next(); // { value:5, done:false }
+it.next(); // { value:5, done:false }
+it.next(); // { value:undefined, done:true }
+```
+
+Consider: Adding custom `@@iterator` to 'randoms' object
+
+```js
+// Adding custom @@iterator property using literal syntax
+var randoms = {
+  [Symbol.iterator]: function() {
+    return {
+      next: function() {
+        return { value: Math.floor((Math.random()*10)) };
+      }
+    };
+  }
+};
+
+var randoms_pool = [];
+for (var n of randoms) {
+  randoms_pool.push( n );
+
+  //Breaking point
+  if (randoms_pool.length === 5) break;
+}
+
+console.log( randoms_pool ); // [1, 4, 6, 1, 8]
+```
