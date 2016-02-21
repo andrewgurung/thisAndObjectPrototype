@@ -38,7 +38,65 @@
 ### Explicit Mixins
 - Explicit Mixins are not same as class-copy behavior
 - Copying objects and functions are not real copies, instead duplication of shared references
+- Copies a property from one object to another
+- Explicitly mixing two or more sources into target object results in multiple inheritance
 
+Consider copying behavior from 'Vehicle' to 'Car'. Since Javascript doesn't do it automatically, we create a utility that manually copies.
+Many libraries called this utility `extend`. For eg: JQuery has `$.extend(..)`
+But we will call it `mixin(..)`
+
+```js
+// Vastly simplified mixin(..)
+function mixin( sourceObj, targetObj ) {
+  for (var key in sourceObj) {
+    // Only copy properties that are missing
+    if (!(key in targetObj)) {
+      targetObj[key] = sourceObj[key];
+    }
+  }
+
+  return targetObj;
+}
+
+var Vehicle = {
+  engines: 1,
+
+  ignition: function() {
+    console.log( "Turning on my engine." );
+  },
+
+  drive: function() {
+    this.ignition();
+    console.log( "Steering and moving forward!" );
+  }
+};
+
+var Car = mixin( Vehicle, {
+  wheels: 4,
+
+  drive: function() {
+    Vehicle.drive.call( this ); // Explicit pseudopolymorphism
+    console.log( "Rolling on all " + this.wheels + " wheels!");
+  }
+} );
+
+console.log( Car.drive() );
+// Output:
+//---------------------------------
+// "Turning on my engine."
+// "Steering and moving forward!"
+// "Rolling on all 4 wheels!"
+```
+
+- No classes are involved
+- We are only adding properties and functions from Vehicle to Car object
+- Functions are not copied but references to functions are duplicated
+- Since Car already had `drive(..)` property(function), it wasn't overriden by Vehicle's `drive(..)` property
+- Explicit pseudopolymorphism: `Vehicle.drive.call( this )` since both Vehicle and Car has `drive()` function, we have to use absolute reference
+- Explicit pseudopolymorphism causes brittle manual/explicit linkage in every function where you need such a reference
+- Best Practice: Avoid Explicit Mixin where possible
+
+#### Parasitic Inheritance
 
 
 ### Implicit Mixins
