@@ -9,3 +9,17 @@
   - Polymorphism doesn't rely on referential link from child to parent
   - Instead Polymorphism is a result of `copy behavior` (behavior of a parent class is copied to its child)
 - Javascript does not automatically create copies as traditional class implies
+- Diamond Problem: Multiple Inheritance  
+  Consider:
+  - Class D inherits from two parents B and C (multiple inheritance)
+  - Both B and C inherits from parent class A
+  - Class A provides a `drive()` method, and both B and C override(polymorph) that method?
+  - When D references `drive()`, which version should it use? `B:drive()` or `C:drive()`
+
+```
+*   A
+   / \
+  B   C
+   \ /
+    D
+```
