@@ -1,3 +1,4 @@
+
 ## Class
 - Classes are a design pattern
 - Classes in JS behaves very differently than other languages
@@ -25,3 +26,20 @@
 ```
 
 ## Mixins
+- A technique of copying properties and functions from a source object to its target object
+- Inheritance or instantiation does not copy objects in Javascript
+- Javascript does not have `classes` to instantiate only objects
+- Instead objects are linked to each other
+- JS Developers fakes copy behavior of traditional classes (as in other languages) with `Mixins`
+- Two types of `Mixins`:
+  - Explicit Mixins
+  - Implicit Mixins
+
+### Explicit Mixins
+- Explicit Mixins are not same as class-copy behavior
+- Copying objects and functions are not real copies, instead duplication of shared references
+
+
+
+### Implicit Mixins
+- Closely related to explicit pseudopolymorphism
