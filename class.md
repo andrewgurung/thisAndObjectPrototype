@@ -80,7 +80,7 @@ var Car = mixin( Vehicle, {
   }
 } );
 
-console.log( Car.drive() );
+Car.drive();
 // Output:
 //---------------------------------
 // "Turning on my engine."
@@ -97,7 +97,88 @@ console.log( Car.drive() );
 - Best Practice: Avoid Explicit Mixin where possible
 
 #### Parasitic Inheritance
+- A mix of both explicit and implicit mixin pattern
+- Popularized by Douglas Crockford
+- Create function for `parent` class
+- Create another function for `parasitic/child` class
+- Make a copy of the definition from the `parent` class by invoking `new` from within `parasitic` class
+- Add additional properties and function to `parent` instance
+- Return the composed object as `child` instance
+
+```js
+// Traditional JS Class
+function Vehicle() {
+  this.engines = 1;
+};
+
+Vehicle.prototype.ignition = function() {
+  console.log( "Turning on my engine." );
+};
+
+Vehicle.prototype.drive = function() {
+  this.ignition();
+  console.log( "Steering and moving forward!" );
+};
+
+// Parasitic Class
+function Car() {
+  // first, 'car' is a 'Vehicle'
+  var car = new Vehicle();
+
+  // now, let's modify our 'car' to specialize it
+  car.wheels = 4;
+
+  // save a privileged reference to 'Vehicle::drive()'
+  var vehDrive = car.drive;
+
+  // override 'Vehicle::drive()''
+  car.drive = function() {
+    vehDrive.call( this );
+    console.log( "Rolling on all " + this.wheels + " wheels!");
+  }
+  return car;
+}
+
+var myCar = new Car(); // Supports garbage collection
+
+// Alternative: Everything is same, except it doesn't support garbage collection
+// var myCar = Car();
+
+myCar.drive();
+// Output:
+//---------------------------------
+// "Turning on my engine."
+// "Steering and moving forward!"
+// "Rolling on all 4 wheels!"
+```
 
 
 ### Implicit Mixins
 - Closely related to explicit pseudopolymorphism
+- Although it takes advantage of `this` rebinding, Something.cool.call( this ) is a brittle call
+
+```js
+var Something = {
+  cool: function() {
+    this.greeting = "Hello World";
+    this.count = this.count ? this.count + 1 : 1;
+  }
+};
+
+Something.call();
+Something.greeting; // Hello World
+Something.count; // 1
+
+var AnotherThing = {
+  cool: function() {
+    // implicit mixin of 'Something' to 'Another'
+    Something.cool.call( this );
+  }
+};
+
+AnotherThing.call();
+AnotherThing.greeting; // Hello World
+AnotherThing.count; // 1: Although we call Something.count and think it should return 2;
+
+```
+- Since we call Something.cool.call(..) using the context of 'AnotherThing' using `this` rebinding, count will be `1` instead of `2`.
