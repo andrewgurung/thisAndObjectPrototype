@@ -1,6 +1,8 @@
 ## [[Prototype]]
 - Objects in Javascript have an internal property `[[Prototype]]`, which is simply a reference to another object
 - In most cases `[[Prototype]]` is a non-null value
+- Top-end of every normal `[[Prototype]]` chain is the built-in `Object.prototype`
+- `Object.prototype` object includes common utilities such as `.hasOwnProperty(..)`, `toString()`, `valueOf()` etc
 
 Consider:
 ```js
@@ -38,4 +40,4 @@ for (var k in anotherObject) {
 - `for..in` loop iterates over its enumerable properties including the `[[Prototype]]` chain
   - Eg: for (var k in anotherObject)
 - But `in` operator will check for existence of a property in the entire chain of object (regardless of enumerability)
-  - Eg: ("a" in anotherObject); 
+  - Eg: ("a" in anotherObject);
