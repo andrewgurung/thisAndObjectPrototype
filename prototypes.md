@@ -72,3 +72,24 @@ anotherObject.a; // 2
 anotherObject.a = 5;
 anotherObject.a; // 5
 ```
+
+## Class
+- Javascript doesn't have abstract pattern/blueprint called `Class` to create objects
+- JS is one unique language where objects can be created directly
+- By default all functions get a public, non-enumerable property called `prototype`
+- Unlike traditional class-oriented languages, JS doesn't perform `copy operation` (make copies from one object/class to another instance)
+- `new Function_Name()` and `Object.create(..)` results in a new object
+  - This new object is internally [[Prototype]] linked to the `Function_Name.prototype` object  
+  - End up with two objects linked to each other
+- `Inheritance`, `Prototypal Inheritance` and `Differential Inheritance` are wrong terms to explain how Javascript works
+
+  Consider:
+  ```js
+  function Foo() {
+    //..
+  }
+
+  var foo = new Foo();
+
+  console.log( Foo.prototype === Object.getPrototypeOf( foo ) ); // true
+  ```
