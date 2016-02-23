@@ -93,3 +93,26 @@ anotherObject.a; // 5
 
   console.log( Foo.prototype === Object.getPrototypeOf( foo ) ); // true
   ```
+
+## Constructor or Call?
+- Functions themselves are **not** constructors
+- Any function called with `new` keyword is said to be a constructor
+- **Best practice:** Constructor functions use capital letters (*Not compulsory though*)
+- Putting `new` keyword infront of a normal `function call` makes it a `constructor call`
+- `constructor call` constructs an object in addition to whatever it was going to do
+
+Consider:
+
+```js
+function NothingSpecial() {
+  console.log( "Don't mind me!" );
+}
+
+// Constructor call
+var a = new NothingSpecial(); // Don't mind me!
+a; // {}
+
+// Function call
+var b = NothingSpecial(); // Don't mind me!
+b; // undefined
+```
