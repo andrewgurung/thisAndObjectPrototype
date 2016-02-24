@@ -120,7 +120,7 @@ b; // undefined
 
 ### Mechanics
 
-Consider
+Consider:
 
 ```js
 function Foo() { /* .. */ }
@@ -156,3 +156,19 @@ c.constructor === Foo; //true
 - `a.constructor` ===> `Foo.prototype.constructor` (**Found**) -> Points to `Foo` function
 - `b.constructor` ===> `Foo.prototype.constructor` ==> `Object.prototype.constructor` (**Found**) -> Points to `Object` function
 - Best Practice: Avoid `.constructor` references where possible
+
+## (Prototypal) Inheritance
+
+- Traditionally we think inheritance to be relationship between two "classes", rather than between "class" and "instance"
+- The figure below shows delegation from object (instance) `a1` to object `Foo.prototype`
+- It also shows delegation from `Bar.prototype` to `Foo.prototype` that somewhat resembles Parent-Child class inheritance
+- Arrows denotes delegation links rather than copy operations
+
+![Prototypal Inheritance](Prototype.png "Prototypal Inheritance")
+
+"Prototypal style" code:
+```js
+function Foo(name) {
+  this.name = name;
+}
+```
