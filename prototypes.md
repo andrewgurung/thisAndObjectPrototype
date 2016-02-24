@@ -100,6 +100,7 @@ anotherObject.a; // 5
 - **Best practice:** Constructor functions use capital letters (*Not compulsory though*)
 - Putting `new` keyword infront of a normal `function call` makes it a `constructor call`
 - `constructor call` constructs an object in addition to whatever it was going to do
+- constructor does **not** mean constructed by
 
 Consider:
 
@@ -116,3 +117,42 @@ a; // {}
 var b = NothingSpecial(); // Don't mind me!
 b; // undefined
 ```
+
+### Mechanics
+
+Consider
+
+```js
+function Foo() { /* .. */ }
+// By default, function declaration gets a `Foo.prototype` object with `constructor` property
+var a = new Foo();
+
+a.constructor === Foo; // true
+
+// Create a new prototype object without `constructor` property
+Foo.prototype = { /* .. */ };
+
+var b = new Foo();
+b.constructor === Foo; // false
+b.constructor === Object; // true
+
+// Adding `.constructor` back to `Foo.prototype` object
+Object.defineProperty( Foo.prototype, "constructor", {
+  enumerable: false,
+  writable: true,
+  configurable: true,
+  value: Foo
+});
+
+var c = new Foo();
+c.constructor === Foo; //true
+```
+
+- `a.constructor` doesn't mean `a` has a property named `constructor` on itself
+- `a.constructor === Foo` doesn't mean `a` was constructed by `Foo`
+- It just happens that `a.constructor` points to `Foo`
+- Behind the scene, delegation is working to find `.constructor` property
+- By default, function declaration gets a `Foo.prototype` object with `constructor` property that references back to `Foo` function
+- `a.constructor` ===> `Foo.prototype.constructor` (**Found**) -> Points to `Foo` function
+- `b.constructor` ===> `Foo.prototype.constructor` ==> `Object.prototype.constructor` (**Found**) -> Points to `Object` function
+- Best Practice: Avoid `.constructor` references where possible
