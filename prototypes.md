@@ -320,3 +320,36 @@ if(!Object.create) {
 ```
 
 ### Links As Fallbacks?
+- Using links between objects as fallback for missing properties is a **bad** practice
+- ES6 introduced `Proxy` which can provide something of a "method not found" behavior
+- Writing a fallback object just incase a child object can't handle some property/method is harder to understand and maintain
+
+```js
+var fallbackObject = {
+  something: function() {
+    console.log( "Magical moment!!" );
+  }
+};
+
+var bar = Object.create( fallbackObject );
+
+bar.something(); // Magical moment!!
+```
+
+**Better Approach:**  Without unexpected magical stuff, but still utilizing the benefit of `[[Prototype]]` delegation mechanism
+```js
+
+var someObject = {
+  something: function() {
+    console.log( "Cool!!" );
+  }
+};
+
+var bar = Object.create( someObject );
+
+bar.doSomething = function() {
+  this.something();
+};
+
+bar.doSomething(); // Cool!!
+```
