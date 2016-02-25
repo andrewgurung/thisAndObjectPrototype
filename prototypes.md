@@ -214,8 +214,9 @@ Bar.prototype = Foo.prototype;
 
 // 4. Second Misconception
 // Linking Bar.prototype to Foo.prototype
-// Problem: Although it creates a new object linked to Foo.prototype, it has side effects
-//          new Foo() invokes a constructor call which might have side effects (logging, setting values, adding properties to `this` etc)
+// Problem: Although it creates a new object linked to Foo.prototype,
+//          new Foo() invokes a constructor call which might have
+//          side effects (logging, setting values, adding properties to `this` etc)
 Bar.prototype = new Foo();
 ```
 
@@ -224,7 +225,6 @@ Bar.prototype = new Foo();
 - Advantage of ES6 approach: it modifies existing `Bar.prototype`
 
 ```js
-
 // pre-ES6
 Bar.prototype = Object.create( Foo.prototype );
 
