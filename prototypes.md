@@ -220,7 +220,7 @@ Bar.prototype = Foo.prototype;
 Bar.prototype = new Foo();
 ```
 
-### ES6 solution
+#### ES6 solution
 - Disadvantage of pre-ES6 approach: it throws away default existing `Bar.prototype`
 - Advantage of ES6 approach: it modifies existing `Bar.prototype`
 
@@ -275,3 +275,48 @@ Object.getPrototypeOf( a ) === Foo.prototype; // true
 // 4. __proto__
 a.__proto__ === Foo.prototype; // true
 ```
+
+## Object Links
+- When a property/method doesn't exist in the object itself, the `[[Prototype]]` link tells the engine where to look next forming a 'prototype chain'
+
+### `Create()` ing Links
+- **Cut** the confusion of `.prototype` and `.constructor` to emulate classes to link objects
+- **Best practice:** Use `Object.create(..)` to create links between proper objects
+- Object with empty [[Prototype]] linkage will noth have any surprising effects from delegated properties/functions
+  - Use case: Flat Data Storage (Dictionaries)
+
+```js
+var foo = {
+  something: function() {
+    console.log( "Cut the confusion" );
+  }
+};
+
+// 1. Creates a link between `bar` and `foo`
+var bar = Object.create( foo );
+
+bar.something(); // Cut the confusion
+
+// 2. Create object with an empty/null [[Prototype]] linkage
+var dictionary = Object.create( null );
+dictionary.cities = [ "New York", "Washington D.C" ];
+console.log( dictionary.cities.length ); // 2
+```
+
+#### Object.create() Polyfilled
+- Object.create(..) was added in ES5
+- For systems prior to ES5, partial polyfill (doesn't support additional parameter to define properties) can be applied as below
+
+```js
+if(!Object.create) {
+  Object.create = function(o) {
+    // Throw away function F() to create object
+    // and override its `.prototype` to point to the object we want to link to
+    function F(){}
+    F.prototype = o;
+    return new F();
+  };
+}
+```
+
+### Links As Fallbacks?
