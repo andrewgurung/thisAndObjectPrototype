@@ -231,3 +231,47 @@ Bar.prototype = Object.create( Foo.prototype );
 // ES6+
 Object.setPrototypeOf( Bar.prototype, Foo.prototype );
 ```
+
+### Inspecting "Class" Relationships
+- Inspecting an instance (object in JS) for its inheritance (delegation linkage in JS) is called introspection or reflection
+
+
+1. `instanceof` operator:
+  - Needs a function on the right hand side of operator
+  - In the entire `[[Prototype]]` chain of `a`, does Foo.prototype ever appear?
+  - Syntax: objectName `instanceof` FunctionName
+
+2. `isPrototypeOf(..)` method: Cleaner approach
+  - Finding relationship between two objects
+  - Doesn't need functions at all
+  - In the entire `[[Prototype]]` chain of `b`, does `a` ever appear?
+  - Syntax: firstObjectName.isPrototypeOf( secondObjectName )
+
+3. `Object.getPrototypeOf(..)` method
+  - Directly retrieve the `[[Prototype]]` of an object
+  - Syntax: Object.getPrototypeOf( a )
+
+4. `__proto__` property (not standardized until ES6!)
+  - A way to access the interal [[Prototype]] of an object
+  - Pronounced as "dunder proto" (dunder unofficial term for double-underscore)
+  - Syntax: objectName.__proto__
+
+```js
+function Foo() { /* .. */ }
+
+var a = new Foo();
+
+// 1. instanceof
+a instanceof Foo; // true
+
+var b = Object.create( a );
+
+// 2. isPrototypeOf
+a.isPrototypeOf(b); // true
+
+// 3. Object.getPrototypeOf(..)
+Object.getPrototypeOf( a ) === Foo.prototype; // true
+
+// 4. __proto__
+a.__proto__ === Foo.prototype; // true
+```
