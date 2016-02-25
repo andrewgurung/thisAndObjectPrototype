@@ -171,4 +171,63 @@ c.constructor === Foo; //true
 function Foo(name) {
   this.name = name;
 }
+
+Foo.prototype.myName = function() {
+  return this.name;
+};
+
+function Bar(name, label) {
+  Foo.call( this, name );
+  this.label = label;
+}
+
+// Beware! Newly linked Bar.prototype will loose its default `Bar.prototype.constructor`
+Bar.prototype = Object.create( Foo.prototype );
+
+Bar.prototype.myLabel = function() {
+  return this.label;
+};
+
+var b = new Bar( "b", "Object b" );
+b.myName();  // b
+b.myLabel(); // Object b
+```
+
+- `Object.create(..)` creates a "new" object and links that new object's (Eg: `Bar.prototype`) internal `[[Prototype]]` to the specified object (Eg: `Foo.prototype`)
+- In short, make a new `Bar.prototype` object that links to `Foo.prototype` object as shown in figure
+
+#### Misconception
+```js
+// 1. Default Bar.prototype
+// Declaring a function creates a default `Bar.prototype` that links back to link to its default object
+function Bar() { /* .. */ }
+
+// 2. Linking Bar.prototype to Foo.prototype
+// Removes the existing default Bar.prototype from #1
+Bar.prototype = Object.create( Foo.prototype );
+
+// 3. First Misconception
+// Linking Bar.prototype to Foo.prototype
+// Problem: Both of them points to the same object
+//          Changing Bar.prototype will directly affect Foo.prototype
+Bar.prototype = Foo.prototype;
+
+// 4. Second Misconception
+// Linking Bar.prototype to Foo.prototype
+// Problem: Although it creates a new object linked to Foo.prototype, it has side effects
+//          new Foo() invokes a constructor call which might have side effects (logging, setting values, adding properties to `this` etc)
+Bar.prototype = new Foo();
+```
+
+### ES6 solution
+- Disadvantage of pre-ES6 approach: it throws away default existing `Bar.prototype`
+- Advantage of ES6 approach: it modifies existing `Bar.prototype`
+
+```js
+
+// pre-ES6
+Bar.prototype = Object.create( Foo.prototype );
+
+// ES6+
+Object.setPrototypeOf( Bar.prototype, Foo.prototype );
 ```
