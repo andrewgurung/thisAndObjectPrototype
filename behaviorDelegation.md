@@ -34,3 +34,33 @@ class XYZ inherits Task {
   }
 }
 ```
+
+### Delegation Theory: OLOO (Objects linked to other objects)
+- Define an object (not a class nor a function) called `Task` with concrete behavior that includes utility methods
+- Then for each task, define `XYZ` and `ABC` that hold task-specific data/behavior
+- Rather than `composing` them together via `class copies`, we keep them in their separate objects
+- Link `XYZ` and `ABC` objects to the `Task` utility object allowing them to delegate when needed
+- Object.create(..) is used to [[Prototype]]- delegate to Task
+
+```js
+var Task = {
+  setID: function(ID) { this.id = ID; },
+  outputID: function() { console.log( this.id ); }
+};
+
+// make `XYZ` delegate to `Task`
+var XYZ = Object.create( Task );
+
+// `XYZ` task specific behavior
+XYZ.prepareTask = function(ID, Label) {
+  this.setID ( ID );
+  this.label = Label;
+};
+
+XYZ.outputTaskDetails = function() {
+ this.outputID();
+ console.log( this.label );
+};
+
+// ABC = Object.create( Task );
+```
