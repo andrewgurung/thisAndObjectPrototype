@@ -117,6 +117,9 @@ b2.speak(); // Hi, I am b2
 ### 2. OLOO Style
   - Delegation from `b1` to `Bar` to `Foo`
   - Only cares about **objects linked to other objects**
+  - OLOO is just cutting out the middle-man (constructor/new mechanisms)
+  - OLOO supports the principle of separation of concerns, where creation and initialization are done in separate calls  
+    Eg: Creation: `Object.create(Bar)` and Initialization: `b1.init('b1')`
 
 ```js
 var Foo = {
@@ -144,5 +147,3 @@ b2.speak(); // Hi, I am b2
 ```
 
 ![OLOO Style](oloo.png "OLOO Style")
-
-## Classes vs. Objects
