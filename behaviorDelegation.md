@@ -75,3 +75,74 @@ XYZ.outputTaskDetails = function() {
    But since it doesn't find it on the object itself, by `[[Prototype]]` delegation, it can follow the link to `Task`  
    Moreover, because of implicit call-site `this` binding, even though `setID(..)` was found in `Task` object, `this` will refer to our `XYZ` call-site `this` object
 4. Mutual Delegation is not allowed by the Javascript engine. If you make `B` linked to `A`, and then try to link `A` to `B`, you will get an error
+
+
+## OO (Prototypal Inheritance) VS OLOO Style
+- Both style takes same advantage of `[[Prototype]]` delegation
+
+
+### 1. OO (classical Prototypal Inheritance) Style
+  - Delegation from `b1` to `Bar.prototype` to `Foo.prototype`
+  - Tries to look like classes, with constructors and prototypes and `new` calls
+
+```js
+function Foo(who) {
+  this.me = who;
+}
+
+Foo.prototype.identify = function() {
+  return "I am " + this.me;
+};
+
+function Bar(who) {
+  Foo.call( this, who );
+}
+
+Bar.prototype = Object.create( Foo.prototype );
+
+Bar.prototype.speak = function() {
+  console.log( "Hi, " + this.identify() );
+};
+
+var b1 = new Bar( "b1" );
+b1.speak(); // Hi, I am b1
+
+var b2 = new Bar( "b2" );
+b2.speak(); // Hi, I am b2
+```
+
+![Prototypal Inheritance](PrototypalInheritance.png "Prototypal Inheritance")
+
+
+### 2. OLOO Style
+  - Delegation from `b1` to `Bar` to `Foo`
+  - Only cares about **objects linked to other objects**
+
+```js
+var Foo = {
+  init: function(who) {
+    this.me = who;
+  },
+  identify: function() {
+    return "I am " + this.me;
+  }
+};
+
+var Bar = Object.create( Foo );
+
+Bar.speak = function() {
+  console.log( "Hi, " + this.identify() );
+};
+
+var b1 = Object.create( Bar );
+b1.init( "b1" );
+b1.speak(); // Hi, I am b1
+
+var b2 = Object.create( Bar );
+b2.init( "b2" );
+b2.speak(); // Hi, I am b2
+```
+
+![OLOO Style](oloo.png "OLOO Style")
+
+## Classes vs. Objects
