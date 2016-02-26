@@ -64,3 +64,14 @@ XYZ.outputTaskDetails = function() {
 
 // ABC = Object.create( Task );
 ```
+
+#### Notes on OLOO style code:
+
+1. State should be on the delegator (`XYZ`), not on the delegate (`Task`)
+   Eg: Both `id` and `label` data members are direct properties on `XYZ`
+2. Avoid naming things the same where possible, because name collision (overriding/polymorphism) creates brittle syntax
+   Eg: `Task.outputID()`, `XYZ.outputTaskDetails()`
+3. `this.setID(ID);` inside of `XYZ` object first looks on `XYZ` for `setID(..)`  
+   But since it doesn't find it on the object itself, by `[[Prototype]]` delegation, it can follow the link to `Task`  
+   Moreover, because of implicit call-site `this` binding, even though `setID(..)` was found in `Task` object, `this` will refer to our `XYZ` call-site `this` object
+4. Mutual Delegation is not allowed by the Javascript engine. If you make `B` linked to `A`, and then try to link `A` to `B`, you will get an error
